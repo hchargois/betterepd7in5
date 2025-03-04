@@ -1,0 +1,20 @@
+[project]
+name = "betterepd7in5"
+version = "0.1.0"
+description = "Better Raspberry Pi Python driver for Waveshare's 7.5\" V2 e-paper display"
+readme = "README.md"
+authors = [
+    { name = "Hugo Chargois", email = "hugo.chargois@free.fr" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "gpiozero>=2.0.1",
+    "lgpio>=0.2.2.0",
+    "numpy>=2.2.3",
+    "pillow>=11.1.0",
+    "spidev>=3.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
