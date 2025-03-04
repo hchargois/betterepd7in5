@@ -77,3 +77,16 @@ with epd.display_bilevel_partial_refresh() as disp:
 ```
 
 You can also call `sleep()` and `clear()` as needed outside of a context.
+
+## Auto-resize and auto-rotation
+
+The display functions will automatically resize and rotate the image.
+
+Auto-rotation means that if your image is wider than it is tall, it will be
+displayed in landscape mode on the display, and otherwise it will be displayed
+in portrait mode.
+
+To flip either orientation 180 degrees, use `EPD(reverse=True)`.
+
+Of course if you don't want any auto-rotation or resizing, you can simply
+prepare your image with the correct display size (800x480) before displaying it.
