@@ -1,6 +1,6 @@
 [project]
 name = "betterepd7in5"
-version = "0.2.0"
+version = "0.2.1"
 description = "Better Raspberry Pi Python driver for Waveshare's 7.5\" V2 e-paper display"
 readme = "README.md"
 authors = [
