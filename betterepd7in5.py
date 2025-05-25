@@ -99,6 +99,12 @@ class EPD:
         self.reverse = reverse
         self.gray_levels = gray_levels
 
+        # What is currently displayed on the screen. This is needed for partial
+        # updates following sleep.
+        self._cur_img: Image.Image | None = None
+        # Whether the display was put to sleep after the last update.
+        self._asleep = False
+
     # Hardware reset
     def reset(self):
         self.epdcfg.digital_write(self.epdcfg.RST_PIN, 1)
@@ -280,7 +286,10 @@ class EPD:
         return image
 
     def _display(self, image: Image.Image, sleep_after: int):
-        data = self._prepare_image(image).convert("1").tobytes()
+        image = self._prepare_image(image).convert("1")
+        self._cur_img = image
+        self._asleep = False
+        data = image.tobytes()
 
         self._send_command(0x10)
         self._send_data2(data)
@@ -303,6 +312,7 @@ class EPD:
         if xy is None:
             image = self._prepare_image(image)
             xy = (0, 0)
+        image = image.convert("1")
 
         x, y = xy
         if x < 0 or y < 0 or x >= self.width or y >= self.height:
@@ -336,7 +346,24 @@ class EPD:
 
         self._send_data(0x01)
 
-        data = image.convert("1").tobytes()
+        self._cur_img = self._cur_img.convert("1")
+        if self._asleep:
+            # if this is the first time we call partial after a sleep, we need
+            # to refresh the back buffer with the currently displayed image
+            self._asleep = False
+            if self._cur_img is None:
+                logger.warning(
+                    "partial should only be called after another update method"
+                )
+            else:
+                cur_crop = self._cur_img.crop((x, y, x + width, y + height))
+                data = cur_crop.tobytes()
+                self._send_command(0x10)
+                self._send_data2(data)
+
+        self._cur_img.paste(image, (x, y))
+
+        data = image.tobytes()
 
         self._send_command(0x13)  # Write Black and White image to RAM
         self._send_data2(data)
@@ -363,6 +390,9 @@ class EPD:
         image = self._prepare_image(image).convert("L")
         if dither:
             image = self._dither_4gray(image)
+        self._cur_img = image
+        self._asleep = False
+
         pixels = np.asarray(image, dtype=np.uint8).reshape(-1)
         pixels = pixels >> 6
 
@@ -423,6 +453,7 @@ class EPD:
 
         _sleep_ms(2000)
         self.epdcfg.module_exit()
+        self._asleep = True
 
     @contextmanager
     def display_bilevel_full_refresh(self, sleep: bool = True):
