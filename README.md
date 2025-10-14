@@ -3,7 +3,7 @@
 - saner API
 - 4-grayscale with dithering for best looking grayscale images (supported by displays sold after 2024-10-23)
 - fast thanks to numpy
-- partial updates that actually work, even if the display has been put to sleep after the last update; this isn't even supported at all by the official driver
+- partial updates that actually work, even if the display has been put to sleep after the last update; this isn't even supported at all by the official driver (see my [blog post](https://thoughts.gohu.org/posts/2025/epaper-partial-updates/) about this)
 
 ## How fast is it?
 
