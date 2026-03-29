@@ -1,5 +1,9 @@
 # Better driver for Waveshare 7.5" e-paper display
 
+Supports the 7.5", 800x480, black/white V2 display: https://www.waveshare.com/wiki/7.5inch_e-Paper_HAT_Manual
+
+Perks include:
+
 - saner API
 - 4-grayscale with dithering for best looking grayscale images (supported by displays sold after 2024-10-23)
 - fast thanks to numpy
